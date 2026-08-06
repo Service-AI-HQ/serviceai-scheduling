@@ -88,12 +88,19 @@ export function UserPage(props: PageProps) {
                 style={{ color: "color-mix(in srgb, var(--cal-brand) 18%, rgba(255,255,255,0.55))", letterSpacing: "0.28em" }}>
                 {COMPANY_NAME}
               </p>
-              <p
-                className="mb-6 mt-1 text-sm font-medium"
-                style={{ color: "color-mix(in srgb, var(--cal-brand) 12%, #ece7e2)" }}>
-                Premium scheduling,{" "}
-                <span style={{ color: "var(--cal-brand)" }}>delivered by {COMPANY_NAME}.</span>
-              </p>
+              {/* Tagline is ServiceAI's own marketing; on a client instance
+                  COMPANY_NAME is the client, so "delivered by <client>" would be
+                  nonsense copy on their booking page. Their bio carries the
+                  practice's own words instead. */}
+              {COMPANY_NAME === "ServiceAI" && (
+                <p
+                  className="mb-6 mt-1 text-sm font-medium"
+                  style={{ color: "color-mix(in srgb, var(--cal-brand) 12%, #ece7e2)" }}>
+                  Premium scheduling,{" "}
+                  <span style={{ color: "var(--cal-brand)" }}>delivered by {COMPANY_NAME}.</span>
+                </p>
+              )}
+              {COMPANY_NAME !== "ServiceAI" && <div className="mb-6" />}
               <UserAvatar
                 size="lg"
                 user={{

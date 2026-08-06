@@ -429,17 +429,23 @@ html[dir="rtl"] .react-tel-input .flag-dropdown {
 [data-testid="book-event-form"] input[type="text"],
 [data-testid="book-event-form"] input[type="email"],
 [data-testid="book-event-form"] input:not([type]),
-[data-testid="book-event-form"] textarea {
+[data-testid="book-event-form"] textarea,
+[data-testid="dialog-creation"] input[type="text"],
+[data-testid="dialog-creation"] input[type="email"],
+[data-testid="dialog-creation"] input:not([type]),
+[data-testid="dialog-creation"] textarea {
   font-size: 1rem !important;
   line-height: 1.45 !important;
   padding: 0.8rem 0.9rem !important;
   min-height: 3rem;
 }
-[data-testid="book-event-form"] textarea {
+[data-testid="book-event-form"] textarea,
+[data-testid="dialog-creation"] textarea {
   min-height: 7.5rem;
   overflow: hidden !important;
   resize: none;
 }
-[data-testid="book-event-form"] label {
+[data-testid="book-event-form"] label,
+[data-testid="dialog-creation"] label {
   font-size: 0.95rem !important;
 }

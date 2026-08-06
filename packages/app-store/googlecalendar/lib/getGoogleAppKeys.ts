@@ -9,5 +9,11 @@ const googleAppKeysSchema = z.object({
 });
 
 export const getGoogleAppKeys = async () => {
+  // Prefer env-provided credentials so per-instance deploys don't need the
+  // secret seeded into the App table.
+  if (process.env.GOOGLE_API_CREDENTIALS) {
+    const { web } = JSON.parse(process.env.GOOGLE_API_CREDENTIALS) as { web: unknown };
+    return googleAppKeysSchema.parse(web);
+  }
   return getParsedAppKeysFromSlug("google-calendar", googleAppKeysSchema);
 };

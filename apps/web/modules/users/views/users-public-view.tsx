@@ -55,7 +55,10 @@ export function UserPage(props: PageProps) {
 
   return (
     <>
-      <div className={classNames(shouldAlignCentrally ? "mx-auto" : "", isEmbed ? "max-w-3xl" : "")}>
+      {/* No width cap when embedded: the host page decides how wide the
+          scheduler should be, and capping here left it as a narrow strip
+          floating in the middle of the host's own full-width card. */}
+      <div className={classNames(shouldAlignCentrally ? "mx-auto" : "", isEmbed ? "w-full" : "")}>
         <main
           className={classNames(
             shouldAlignCentrally ? "mx-auto" : "",
@@ -168,7 +171,10 @@ export function UserPage(props: PageProps) {
                 }}
                 // Soft brand-tinted lift rather than a hard border, so the cards
                 // sit naturally inside a host site's own card styling.
-                className="bg-default border-subtle group relative rounded-xl border shadow-[0_4px_20px_color-mix(in_srgb,var(--cal-brand)_7%,transparent)] transition-all duration-150 hover:-translate-y-0.5 hover:border-[color:var(--cal-brand)] hover:shadow-[0_8px_28px_color-mix(in_srgb,var(--cal-brand)_16%,transparent)]"
+                // focus-visible, not focus: the embed hands focus to the first
+                // card on load, which drew a brand-coloured border around one
+                // card and made the row look misaligned.
+                className="bg-default border-subtle group relative rounded-xl border shadow-[0_4px_20px_color-mix(in_srgb,var(--cal-brand)_7%,transparent)] transition-all duration-150 hover:-translate-y-0.5 hover:border-[color:var(--cal-brand)] hover:shadow-[0_8px_28px_color-mix(in_srgb,var(--cal-brand)_16%,transparent)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--cal-brand)]"
                 data-testid="event-type-link">
                 <Icon
                   name="arrow-right"

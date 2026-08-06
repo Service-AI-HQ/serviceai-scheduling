@@ -6,7 +6,7 @@ import {
   useEmbedStyles,
   useIsEmbed,
 } from "@calcom/embed-core/embed-iframe";
-import { COMPANY_NAME, WEBSITE_URL } from "@calcom/lib/constants";
+import { COMPANY_NAME } from "@calcom/lib/constants";
 import { useRouterQuery } from "@calcom/lib/hooks/useRouterQuery";
 import useTheme from "@calcom/lib/hooks/useTheme";
 import { UserAvatar } from "@calcom/ui/components/avatar";
@@ -177,15 +177,17 @@ export function UserPage(props: PageProps) {
 
           {isEventListEmpty && <EmptyPage name={profile.name || "User"} />}
 
+          {/* Attribution is ServiceAI on every instance, including client-branded
+              ones — COMPANY_NAME is the client's name there, not the builder's. */}
           {!isEmbed && (
             <p className="text-subtle mt-10 text-center text-xs">
               Powered by{" "}
               <a
-                href={WEBSITE_URL}
+                href="https://serviceaihq.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-semibold text-[color:var(--cal-brand)] no-underline">
-                {COMPANY_NAME}
+                ServiceAI
               </a>
             </p>
           )}

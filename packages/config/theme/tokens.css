@@ -239,21 +239,21 @@
   --radius-none: 0px;
 
   /* Background Standard — warm neutrals (ServiceAI) */
-  --cal-bg-emphasis: hsla(28, 25%, 90%, 1);
+  --cal-bg-emphasis: hsla(139, 25%, 90%, 1);
   --cal-bg: hsla(0, 0%, 100%, 1);
-  --cal-bg-subtle: hsla(28, 22%, 94%, 1);
-  --cal-bg-muted: hsla(30, 30%, 97%, 1);
-  --cal-bg-inverted: hsla(24, 100%, 5%, 1);
+  --cal-bg-subtle: hsla(139, 22%, 94%, 1);
+  --cal-bg-muted: hsla(141, 30%, 97%, 1);
+  --cal-bg-inverted: hsla(135, 100%, 5%, 1);
 
   /* Background Primary — ServiceAI orange */
-  --cal-bg-primary: #f57a2b;
-  --cal-bg-primary-emphasis: #d9631a;
-  --cal-bg-primary-muted: hsla(28, 85%, 93%, 1);
+  --cal-bg-primary: #1b4a27;
+  --cal-bg-primary-emphasis: #14371d;
+  --cal-bg-primary-muted: hsla(139, 85%, 93%, 1);
 
   /* Background Brand — ServiceAI orange */
-  --cal-bg-brand: #f57a2b;
-  --cal-bg-brand-emphasis: #d9631a;
-  --cal-bg-brand-muted: hsla(28, 85%, 93%, 1);
+  --cal-bg-brand: #1b4a27;
+  --cal-bg-brand-emphasis: #14371d;
+  --cal-bg-brand-muted: hsla(139, 85%, 93%, 1);
 
   /* Background Semantic */
   --cal-bg-semantic-info-subtle: hsla(212, 88%, 97%, 1);
@@ -290,10 +290,10 @@
   --cal-bg-launch-dark: hsla(242, 53%, 10%, 1);
 
   /* Borders — warm neutrals (ServiceAI) */
-  --cal-border-emphasis: hsla(26, 10%, 62%, 1);
-  --cal-border: hsla(26, 14%, 83%, 1);
-  --cal-border-subtle: hsla(28, 18%, 90%, 1);
-  --cal-border-muted: hsla(28, 20%, 94%, 1);
+  --cal-border-emphasis: hsla(137, 10%, 62%, 1);
+  --cal-border: hsla(137, 14%, 83%, 1);
+  --cal-border-subtle: hsla(139, 18%, 90%, 1);
+  --cal-border-muted: hsla(139, 20%, 94%, 1);
   --cal-border-error: hsla(0, 96%, 89%, 1);
   --cal-border-semantic-error: hsla(0, 96%, 89%, 1);
   --cal-border-semantic-attention-subtle: hsla(32, 98%, 83%, 1);
@@ -301,10 +301,10 @@
   --cal-border-booker: var(--cal-border-subtle);
 
   /* Content/Text Standard — warm neutrals (ServiceAI) */
-  --cal-text-emphasis: hsla(24, 60%, 5%, 1);
-  --cal-text: hsla(24, 8%, 25%, 1);
-  --cal-text-subtle: hsla(24, 7%, 45%, 1);
-  --cal-text-muted: hsla(26, 9%, 63%, 1);
+  --cal-text-emphasis: hsla(135, 60%, 5%, 1);
+  --cal-text: hsla(135, 8%, 25%, 1);
+  --cal-text-subtle: hsla(135, 7%, 45%, 1);
+  --cal-text-muted: hsla(137, 9%, 63%, 1);
   --cal-text-inverted: hsla(0, 0%, 100%, 1);
 
   /* Content/Text Semantic */
@@ -329,9 +329,9 @@
   --cal-text-error: hsla(0, 63%, 31%, 1);
 
   /* Brand — ServiceAI orange (matches serviceaihq.com) */
-  --cal-brand: #f57a2b;
-  --cal-brand-emphasis: #d9631a;
-  --cal-brand-text: #1a0a00;
+  --cal-brand: #1b4a27;
+  --cal-brand-emphasis: #14371d;
+  --cal-brand-text: #ffffff;
 
   /* Box Shadows */
   --shadow-dropdown: 0px 5px 20px 0px rgba(0, 0, 0, 0.10), 0px 10px 40px 0px rgba(0, 0, 0, 0.03);
@@ -368,21 +368,21 @@
 
 .dark {
   /* Background Standard — warm near-black (ServiceAI) */
-  --cal-bg-emphasis: hsla(24, 12%, 22%, 1);
-  --cal-bg: hsla(24, 25%, 5%, 1);
-  --cal-bg-subtle: hsla(24, 15%, 13%, 1);
-  --cal-bg-muted: hsla(24, 20%, 8%, 1);
-  --cal-bg-inverted: hsla(30, 25%, 97%, 1);
+  --cal-bg-emphasis: hsla(135, 12%, 22%, 1);
+  --cal-bg: hsla(135, 25%, 5%, 1);
+  --cal-bg-subtle: hsla(135, 15%, 13%, 1);
+  --cal-bg-muted: hsla(135, 20%, 8%, 1);
+  --cal-bg-inverted: hsla(141, 25%, 97%, 1);
 
   /* Background Primary — ServiceAI orange */
-  --cal-bg-primary: #f57a2b;
-  --cal-bg-primary-emphasis: #ff8c3f;
-  --cal-bg-primary-muted: hsla(24, 45%, 14%, 1);
+  --cal-bg-primary: #1b4a27;
+  --cal-bg-primary-emphasis: #2e7a42;
+  --cal-bg-primary-muted: hsla(135, 45%, 14%, 1);
 
   /* Background Brand — ServiceAI orange */
-  --cal-bg-brand: #f57a2b;
-  --cal-bg-brand-emphasis: #ff8c3f;
-  --cal-bg-brand-muted: hsla(24, 45%, 14%, 1);
+  --cal-bg-brand: #1b4a27;
+  --cal-bg-brand-emphasis: #2e7a42;
+  --cal-bg-brand-muted: hsla(135, 45%, 14%, 1);
 
   /* Background Semantic */
   --cal-bg-semantic-info-subtle: hsla(236, 80%, 8%, 1);
@@ -419,10 +419,10 @@
   --cal-bg-launch-dark: hsla(242, 53%, 10%, 1);
 
   /* Border Standard — warm near-black (ServiceAI) */
-  --cal-border: hsla(24, 10%, 29%, 1);
-  --cal-border-muted: hsla(24, 18%, 9%, 1);
-  --cal-border-subtle: hsla(24, 13%, 15%, 1);
-  --cal-border-emphasis: hsla(24, 8%, 44%, 1);
+  --cal-border: hsla(135, 10%, 29%, 1);
+  --cal-border-muted: hsla(135, 18%, 9%, 1);
+  --cal-border-subtle: hsla(135, 13%, 15%, 1);
+  --cal-border-emphasis: hsla(135, 8%, 44%, 1);
   --cal-border-semantic-error: hsla(0, 63%, 24%, 1);
   --cal-border-semantic-attention-subtle: hsla(15, 75%, 23%, 1);
   --cal-border-semantic-error-subtle: hsla(0, 63%, 24%, 1);
@@ -430,11 +430,11 @@
   --cal-border-booker: var(--cal-border-subtle);
 
   /* Content/Text Standard — warm near-black (ServiceAI) */
-  --cal-text-emphasis: hsla(30, 30%, 97%, 1);
-  --cal-text: hsla(30, 10%, 83%, 1);
-  --cal-text-subtle: hsla(28, 7%, 64%, 1);
-  --cal-text-muted: hsla(28, 7%, 64%, 1);
-  --cal-text-inverted: hsla(24, 60%, 4%, 1);
+  --cal-text-emphasis: hsla(141, 30%, 97%, 1);
+  --cal-text: hsla(141, 10%, 83%, 1);
+  --cal-text-subtle: hsla(139, 7%, 64%, 1);
+  --cal-text-muted: hsla(139, 7%, 64%, 1);
+  --cal-text-inverted: hsla(135, 60%, 4%, 1);
 
   /* Content/Text Semantic */
   --cal-text-semantic-info: hsla(229, 90%, 74%, 1);
@@ -453,9 +453,9 @@
   --cal-text-error: hsla(3, 66%, 93%, 1);
 
   /* Brand — ServiceAI orange (matches serviceaihq.com) */
-  --cal-brand: #f57a2b;
-  --cal-brand-emphasis: #ff8c3f;
-  --cal-brand-text: #1a0a00;
+  --cal-brand: #1b4a27;
+  --cal-brand-emphasis: #2e7a42;
+  --cal-brand-text: #ffffff;
 
   /* Fill Colors */
   --fill-emphasis: var(--cal-text-emphasis);

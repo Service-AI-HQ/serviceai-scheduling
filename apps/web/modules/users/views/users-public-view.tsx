@@ -184,16 +184,19 @@ export function UserPage(props: PageProps) {
 
           {isEventListEmpty && <EmptyPage name={profile.name || "User"} />}
 
-          {/* Attribution is ServiceAI on every instance, including client-branded
-              ones — COMPANY_NAME is the client's name there, not the builder's. */}
+          {/* Attribution names ServiceAI on every instance, including
+              client-branded ones (COMPANY_NAME is the client there). Kept
+              deliberately quiet — the client's own brand is the page's message —
+              but always a live link back to what we build. */}
           {!isEmbed && (
-            <p className="text-subtle mt-10 text-center text-xs">
+            <p className="text-muted mt-12 text-center text-[11px]">
               Powered by{" "}
               <a
                 href="https://serviceaihq.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-semibold text-[color:var(--cal-brand)] no-underline">
+                title="Custom AI tools and software your business owns — by ServiceAI"
+                className="text-muted underline underline-offset-2 transition-colors hover:text-[color:var(--cal-brand)]">
                 ServiceAI
               </a>
             </p>

@@ -6,7 +6,6 @@ import {
   FAVICON_32,
   IS_SELF_HOSTED,
   LOGO,
-  LOGO_DARK,
   LOGO_ICON,
   MSTILE_ICON,
   WEBAPP_URL,
@@ -43,7 +42,6 @@ const SYSTEM_SUBDOMAINS = ["console", "app", "www"];
 
 type LogoType =
   | "logo"
-  | "logo-dark"
   | "icon"
   | "favicon-16"
   | "favicon-32"
@@ -62,13 +60,6 @@ type LogoTypeDefinition = {
 const logoDefinitions: Record<LogoType, LogoTypeDefinition> = {
   logo: {
     fallback: `${WEBAPP_URL}${LOGO}`,
-    source: "appLogo",
-  },
-  // The default logo is light-on-transparent, so it disappears against a light background.
-  // This serves the dark-ink colorway for that case. A tenant's own appLogo still wins, same
-  // as every other type — this only changes which bundled asset is used as the fallback.
-  "logo-dark": {
-    fallback: `${WEBAPP_URL}${LOGO_DARK}`,
     source: "appLogo",
   },
   icon: {

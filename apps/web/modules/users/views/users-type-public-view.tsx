@@ -26,9 +26,21 @@ export const getMultipleDurationValue = (
 
 function Type({ slug, user, isEmbed, booking, isBrandingHidden, eventData, orgBannerUrl }: PageProps) {
   const searchParams = useSearchParams();
+  // Picking the wrong service was a dead end: the booker is a standalone page
+  // with no route back to the list. Rescheduling has its own context, and an
+  // embed lives inside the host page's own navigation, so neither gets this.
+  const showBackToServices = !isEmbed && !booking && !!user;
 
   return (
     <BookingPageErrorBoundary>
+      {showBackToServices && (
+        <a
+          href={`/${user}`}
+          className="text-subtle hover:text-emphasis fixed left-4 top-4 z-50 flex items-center gap-1.5 rounded-lg border border-subtle bg-default px-3 py-1.5 text-sm shadow-sm transition-colors"
+          data-testid="back-to-services">
+          <span aria-hidden="true">←</span> All services
+        </a>
+      )}
       <main className={getBookerWrapperClasses({ isEmbed: !!isEmbed })}>
         <Booker
           username={user}

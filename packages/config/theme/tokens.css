@@ -239,11 +239,11 @@
   --radius-none: 0px;
 
   /* Background Standard — warm neutrals (ServiceAI) */
-  --cal-bg-emphasis: hsla(104, 25%, 90%, 1);
-  --cal-bg: hsla(0, 0%, 100%, 1);
-  --cal-bg-subtle: hsla(104, 22%, 94%, 1);
-  --cal-bg-muted: hsla(106, 30%, 97%, 1);
-  --cal-bg-inverted: hsla(100, 100%, 5%, 1);
+  --cal-bg-emphasis: #e4e7de;
+  --cal-bg: #ffffff;
+  --cal-bg-subtle: #f2f1ec;
+  --cal-bg-muted: #f7f6f1;
+  --cal-bg-inverted: #1b4a27;
 
   /* Background Primary — ServiceAI orange */
   --cal-bg-primary: #2aa30f;
@@ -290,10 +290,10 @@
   --cal-bg-launch-dark: hsla(242, 53%, 10%, 1);
 
   /* Borders — warm neutrals (ServiceAI) */
-  --cal-border-emphasis: hsla(102, 10%, 62%, 1);
-  --cal-border: hsla(102, 14%, 83%, 1);
-  --cal-border-subtle: hsla(104, 18%, 90%, 1);
-  --cal-border-muted: hsla(104, 20%, 94%, 1);
+  --cal-border-emphasis: #8a8574;
+  --cal-border: #e4e7de;
+  --cal-border-subtle: #e6ebe4;
+  --cal-border-muted: #efeee9;
   --cal-border-error: hsla(0, 96%, 89%, 1);
   --cal-border-semantic-error: hsla(0, 96%, 89%, 1);
   --cal-border-semantic-attention-subtle: hsla(32, 98%, 83%, 1);
@@ -301,11 +301,11 @@
   --cal-border-booker: var(--cal-border-subtle);
 
   /* Content/Text Standard — warm neutrals (ServiceAI) */
-  --cal-text-emphasis: hsla(100, 60%, 5%, 1);
-  --cal-text: hsla(100, 8%, 25%, 1);
-  --cal-text-subtle: hsla(100, 7%, 45%, 1);
-  --cal-text-muted: hsla(102, 9%, 63%, 1);
-  --cal-text-inverted: hsla(0, 0%, 100%, 1);
+  --cal-text-emphasis: #1b4a27;
+  --cal-text: #4a4a4a;
+  --cal-text-subtle: #8a8574;
+  --cal-text-muted: #a9a498;
+  --cal-text-inverted: #ffffff;
 
   /* Content/Text Semantic */
   --cal-text-semantic-info: hsla(236, 80%, 25%, 1);

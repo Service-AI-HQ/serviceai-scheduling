@@ -11,6 +11,23 @@ brand_emphasis_dark: "#38C41A"
 brand_text: "#0A2011"
 neutral_hue: 100
 logo_source: branding/assets/logo-mark.png
+# Exact light-mode neutrals from the practice's own stylesheet
+# (ArborVitae_Website/styles.css) — matching them is what makes the scheduler
+# read as part of their site rather than a green-tinted app.
+bg: "#FFFFFF"            # --sand, their card surface
+bg_subtle: "#F2F1EC"     # --pg, page background
+bg_muted: "#F7F6F1"      # between card and page
+bg_emphasis: "#E4E7DE"   # --lin
+bg_inverted: "#1B4A27"   # --fst
+border: "#E4E7DE"        # --lin
+border_subtle: "#E6EBE4"  # --mist
+border_muted: "#EFEEE9"
+border_emphasis: "#8A8574" # --mut
+text_emphasis: "#1B4A27" # --fst, their heading colour
+text: "#4A4A4A"          # --chr, body copy
+text_subtle: "#8A8574"   # --mut
+text_muted: "#A9A498"
+text_inverted: "#FFFFFF"
 ---
 
 # Arbor Vitae Wellness — brand spec

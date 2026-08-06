@@ -98,7 +98,11 @@ export const PUBLIC_QUICK_AVAILABILITY_ROLLOUT =
 
 /** @deprecated use `WEBAPP_URL` */
 export const NEXT_PUBLIC_BASE_URL = process.env.NEXT_PUBLIC_WEBAPP_URL || `https://${process.env.VERCEL_URL}`;
-export const LOGO = "/calcom-logo-white-word.svg";
+// The approved ServiceAI wordmark artwork (723x192 for a ~32px display height). Hosted as a
+// raster on purpose: the previous SVG set the lettering as live <text> in a system font stack,
+// so the mark rendered in a different typeface on every OS. This is a dark-background lockup —
+// Logo.tsx gives it a dark chip so it always sits on the surface it was designed for.
+export const LOGO = "/serviceai-wordmark.png";
 export const LOGO_DARK = "/cal-logo-word-black.svg";
 export const LOGO_ICON = "/cal-com-icon-white.svg";
 export const AVATAR_FALLBACK = "/avatar.svg";

@@ -66,7 +66,10 @@ export function UserPage(props: PageProps) {
               gradient, faint diagonal brand texture, brand-ringed avatar. */}
           <div
             className="border-subtle mb-6 overflow-hidden rounded-2xl border"
-            style={{ background: "linear-gradient(160deg, #211307 0%, #140c06 55%, #0e0905 100%)" }}>
+            style={{
+              background:
+                "linear-gradient(160deg, color-mix(in srgb, var(--cal-brand) 16%, #0a0a0a) 0%, color-mix(in srgb, var(--cal-brand) 8%, #0a0a0a) 55%, color-mix(in srgb, var(--cal-brand) 5%, #0a0a0a) 100%)",
+            }}>
             {isOrg && user.profile.organization?.bannerUrl && (
               <OrgBanner
                 alt={user.profile.organization.name ?? "Organization banner"}
@@ -78,14 +81,16 @@ export function UserPage(props: PageProps) {
               className="p-6 sm:p-8"
               style={{
                 background:
-                  "repeating-linear-gradient(115deg, transparent 0px, transparent 22px, rgba(245,122,43,0.045) 22px, rgba(245,122,43,0.045) 24px)",
+                  "repeating-linear-gradient(115deg, transparent 0px, transparent 22px, color-mix(in srgb, var(--cal-brand) 4.5%, transparent) 22px, color-mix(in srgb, var(--cal-brand) 4.5%, transparent) 24px)",
               }}>
               <p
                 className="text-[10px] font-semibold uppercase"
-                style={{ color: "rgba(230,214,199,0.55)", letterSpacing: "0.28em" }}>
+                style={{ color: "color-mix(in srgb, var(--cal-brand) 18%, rgba(255,255,255,0.55))", letterSpacing: "0.28em" }}>
                 {COMPANY_NAME}
               </p>
-              <p className="mb-6 mt-1 text-sm font-medium" style={{ color: "#e6d6c7" }}>
+              <p
+                className="mb-6 mt-1 text-sm font-medium"
+                style={{ color: "color-mix(in srgb, var(--cal-brand) 12%, #ece7e2)" }}>
                 Premium scheduling,{" "}
                 <span style={{ color: "var(--cal-brand)" }}>delivered by {COMPANY_NAME}.</span>
               </p>
@@ -98,7 +103,7 @@ export function UserPage(props: PageProps) {
                   username: profile.username,
                 }}
                 className={classNames(
-                  "rounded-full shadow-[0_0_28px_rgba(245,122,43,0.35)] ring-2 ring-[color:var(--cal-brand)] ring-offset-2 ring-offset-transparent",
+                  "rounded-full shadow-[0_0_28px_color-mix(in_srgb,var(--cal-brand)_35%,transparent)] ring-2 ring-[color:var(--cal-brand)] ring-offset-2 ring-offset-transparent",
                   isOrg && user.profile.organization?.bannerUrl ? "-mt-14" : ""
                 )}
               />
@@ -107,7 +112,7 @@ export function UserPage(props: PageProps) {
                   "font-cal mb-1 text-3xl",
                   isOrg && user.profile.organization?.bannerUrl ? "" : "mt-5"
                 )}
-                style={{ color: "#f5efe8" }}
+                style={{ color: "color-mix(in srgb, var(--cal-brand) 6%, #f4f2f0)" }}
                 data-testid="name-title">
                 {profile.name}
                 {!isOrg && user.verified && (
@@ -128,7 +133,7 @@ export function UserPage(props: PageProps) {
                   {/* biome-ignore lint/security/noDangerouslySetInnerHtml: Content is sanitized via safeBio */}
                   <div
                     className="wrap-break-word mt-2 text-sm leading-relaxed [&_a]:underline"
-                    style={{ color: "#d9cec4" }}
+                    style={{ color: "color-mix(in srgb, var(--cal-brand) 10%, #d8d4d0)" }}
                     dangerouslySetInnerHTML={{ __html: props.safeBio }}
                   />
                 </>
@@ -153,7 +158,7 @@ export function UserPage(props: PageProps) {
                     eventType: type,
                   });
                 }}
-                className="bg-default border-subtle group relative rounded-xl border transition-all duration-150 hover:-translate-y-0.5 hover:border-[color:var(--cal-brand)] hover:shadow-[0_6px_24px_rgba(245,122,43,0.18)]"
+                className="bg-default border-subtle group relative rounded-xl border transition-all duration-150 hover:-translate-y-0.5 hover:border-[color:var(--cal-brand)] hover:shadow-[0_6px_24px_color-mix(in_srgb,var(--cal-brand)_18%,transparent)]"
                 data-testid="event-type-link">
                 <Icon
                   name="arrow-right"

@@ -59,11 +59,14 @@ export function UserPage(props: PageProps) {
         <main
           className={classNames(
             shouldAlignCentrally ? "mx-auto" : "",
-            isEmbed ? "border-booker border-booker-width  bg-default rounded-md" : "",
-            "max-w-2xl px-4 py-10"
+            isEmbed ? "bg-transparent" : "",
+            isEmbed ? "max-w-2xl px-0 py-0" : "max-w-2xl px-4 py-10"
           )}>
-          {/* Hero — mirrors the tap.serviceaihq.com card: warm near-black
-              gradient, faint diagonal brand texture, brand-ringed avatar. */}
+          {/* Hero — mirrors the tap.serviceaihq.com card. Shared-link only: on a
+              site embed the host page already carries the identity (logo, name,
+              intro copy), so repeating it here duplicates the page and drops a
+              dark card into someone else's light layout. */}
+          {!isEmbed && (
           <div
             className="border-subtle mb-6 overflow-hidden rounded-2xl border"
             style={{
@@ -140,6 +143,7 @@ export function UserPage(props: PageProps) {
               )}
             </div>
           </div>
+          )}
 
           {/* Event types as standalone premium cards instead of a joined list. */}
           <div className="flex flex-col gap-3" data-testid="event-types">
@@ -158,7 +162,9 @@ export function UserPage(props: PageProps) {
                     eventType: type,
                   });
                 }}
-                className="bg-default border-subtle group relative rounded-xl border transition-all duration-150 hover:-translate-y-0.5 hover:border-[color:var(--cal-brand)] hover:shadow-[0_6px_24px_color-mix(in_srgb,var(--cal-brand)_18%,transparent)]"
+                // Soft brand-tinted lift rather than a hard border, so the cards
+                // sit naturally inside a host site's own card styling.
+                className="bg-default border-subtle group relative rounded-xl border shadow-[0_4px_20px_color-mix(in_srgb,var(--cal-brand)_7%,transparent)] transition-all duration-150 hover:-translate-y-0.5 hover:border-[color:var(--cal-brand)] hover:shadow-[0_8px_28px_color-mix(in_srgb,var(--cal-brand)_16%,transparent)]"
                 data-testid="event-type-link">
                 <Icon
                   name="arrow-right"

@@ -328,10 +328,10 @@
   --cal-text-attention: hsla(16, 62%, 28%, 1);
   --cal-text-error: hsla(0, 63%, 31%, 1);
 
-  /* Brand */
-  --cal-brand: hsla(221, 39%, 11%, 1);
-  --cal-brand-emphasis: hsla(0, 0%, 6%, 1);
-  --cal-brand-text: hsla(0, 0%, 100%, 1);
+  /* Brand — ServiceAI orange (matches serviceaihq.com) */
+  --cal-brand: #f57a2b;
+  --cal-brand-emphasis: #d9631a;
+  --cal-brand-text: #1a0a00;
 
   /* Box Shadows */
   --shadow-dropdown: 0px 5px 20px 0px rgba(0, 0, 0, 0.10), 0px 10px 40px 0px rgba(0, 0, 0, 0.03);
@@ -452,10 +452,10 @@
   --cal-text-attention: hsla(37, 86%, 92%, 1);
   --cal-text-error: hsla(3, 66%, 93%, 1);
 
-  /* Brand */
-  --cal-brand: hsla(0, 0%, 100%, 1);
-  --cal-brand-emphasis: hsla(218, 11%, 65%, 1);
-  --cal-brand-text: hsla(0, 0%, 0%, 1);
+  /* Brand — ServiceAI orange (matches serviceaihq.com) */
+  --cal-brand: #f57a2b;
+  --cal-brand-emphasis: #ff8c3f;
+  --cal-brand-text: #1a0a00;
 
   /* Fill Colors */
   --fill-emphasis: var(--cal-text-emphasis);

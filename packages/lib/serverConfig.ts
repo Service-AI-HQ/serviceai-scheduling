@@ -1,11 +1,20 @@
+import type { Transport } from "nodemailer";
 import type SendmailTransport from "nodemailer/lib/sendmail-transport";
 import type SMTPConnection from "nodemailer/lib/smtp-connection";
 
 import { isENVDev } from "@calcom/lib/env";
 
 import { getAdditionalEmailHeaders } from "./getAdditionalEmailHeaders";
+import { createGmailServiceAccountTransport } from "./gmailServiceAccountTransport";
 
-function detectTransport(): SendmailTransport.Options | SMTPConnection.Options | string {
+function detectTransport(): SendmailTransport.Options | SMTPConnection.Options | Transport | string {
+  if (process.env.GMAIL_SA_KEY_JSON && process.env.GMAIL_SA_IMPERSONATE) {
+    return createGmailServiceAccountTransport(
+      process.env.GMAIL_SA_KEY_JSON,
+      process.env.GMAIL_SA_IMPERSONATE
+    );
+  }
+
   if (process.env.RESEND_API_KEY) {
     const transport = {
       host: "smtp.resend.com",

@@ -178,20 +178,22 @@ async function superRefineField({
   }
 
   if (field.type === "multiemail") {
-    const emailsParsed = emailSchema.array().safeParse(value);
+    // An untouched "Add another" row is absence, not an invalid address —
+    // drop empty entries before validating, whatever the field is called.
+    // The old guard only forgave the all-empty case, so one real guest plus
+    // one blank row failed the whole form.
+    const cleaned = Array.isArray(value)
+      ? (value as string[]).map((v) => String(v ?? "").trim()).filter((v) => v !== "")
+      : value;
+    responses[field.name] = cleaned;
+    const emailsParsed = emailSchema.array().safeParse(cleaned);
 
-    if (isRequired && (!value || (value as unknown[]).length === 0)) {
+    if (isRequired && (!cleaned || (cleaned as unknown[]).length === 0)) {
       zodCtx.addIssue({ code: z.ZodIssueCode.custom, message: m(`error_required_field`) });
       return;
     }
 
     if (!emailsParsed.success) {
-      // If additional guests are shown but all inputs are empty then don't show any errors
-      if (field.name === "guests" && (value as string[]).every((email: string) => email === "")) {
-        // reset guests to empty array, otherwise it adds "" for every input
-        responses[field.name] = [];
-        return;
-      }
       zodCtx.addIssue({
         code: z.ZodIssueCode.custom,
         message: m("email_validation_error"),

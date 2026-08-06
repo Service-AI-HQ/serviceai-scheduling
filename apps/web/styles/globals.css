@@ -422,3 +422,24 @@ html[dir="rtl"] .react-tel-input .flag-dropdown {
   left: auto !important;
   right: 0 !important;
 }
+
+/* ServiceAI: booking-form ergonomics. 16px inputs stop iOS from zooming (the
+   "scrolling" on focus); generous padding makes them feel like the rest of
+   the brand; the notes box grows instead of becoming a scrollbox. */
+[data-testid="book-event-form"] input[type="text"],
+[data-testid="book-event-form"] input[type="email"],
+[data-testid="book-event-form"] input:not([type]),
+[data-testid="book-event-form"] textarea {
+  font-size: 1rem !important;
+  line-height: 1.45 !important;
+  padding: 0.8rem 0.9rem !important;
+  min-height: 3rem;
+}
+[data-testid="book-event-form"] textarea {
+  min-height: 7.5rem;
+  overflow: hidden !important;
+  resize: none;
+}
+[data-testid="book-event-form"] label {
+  font-size: 0.95rem !important;
+}

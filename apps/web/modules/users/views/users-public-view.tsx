@@ -60,7 +60,9 @@ export function UserPage(props: PageProps) {
           className={classNames(
             shouldAlignCentrally ? "mx-auto" : "",
             isEmbed ? "bg-transparent" : "",
-            isEmbed ? "max-w-2xl px-0 py-0" : "max-w-2xl px-4 py-10"
+            // Embedded, the host page owns the width — filling it lets a wide
+            // column show two services per row instead of a narrow ribbon.
+            isEmbed ? "max-w-none px-0 py-0" : "max-w-2xl px-4 py-10"
           )}>
           {/* Hero — mirrors the tap.serviceaihq.com card. Shared-link only: on a
               site embed the host page already carries the identity (logo, name,
@@ -153,7 +155,9 @@ export function UserPage(props: PageProps) {
           )}
 
           {/* Event types as standalone premium cards instead of a joined list. */}
-          <div className="flex flex-col gap-3" data-testid="event-types">
+          <div
+            className={classNames("flex flex-col gap-3", isEmbed && "md:grid md:grid-cols-2")}
+            data-testid="event-types">
             {eventTypes.map((type) => (
               <Link
                 key={type.id}

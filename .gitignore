@@ -117,3 +117,6 @@ agents/devin-knowledge.json
 
 # pagefind
 _pagefind/
+
+# Records the product name last written into the locale by branding/apply-brand.mjs
+branding/.applied-name

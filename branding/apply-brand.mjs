@@ -32,6 +32,34 @@ const H = Number(spec.neutral_hue);
 if (!(H >= 0 && H <= 360)) throw new Error("neutral_hue must be 0-360");
 const lc = (s) => s.toLowerCase();
 
+// Optional exact light-mode neutrals. Hue-derived greys are a good guess from a
+// logo alone, but when a client's stylesheet states its greys, matching them is
+// the difference between "same colour family" and "same design" — a derived
+// scale drifts toward the brand hue and flattens the type contrast the client
+// actually designed. Any key omitted falls back to the derivation.
+const NEUTRAL_KEYS = {
+  bg: "--cal-bg",
+  bg_subtle: "--cal-bg-subtle",
+  bg_muted: "--cal-bg-muted",
+  bg_emphasis: "--cal-bg-emphasis",
+  bg_inverted: "--cal-bg-inverted",
+  border: "--cal-border",
+  border_subtle: "--cal-border-subtle",
+  border_muted: "--cal-border-muted",
+  border_emphasis: "--cal-border-emphasis",
+  text_emphasis: "--cal-text-emphasis",
+  text: "--cal-text",
+  text_subtle: "--cal-text-subtle",
+  text_muted: "--cal-text-muted",
+  text_inverted: "--cal-text-inverted",
+};
+const overrides = {};
+for (const [key, token] of Object.entries(NEUTRAL_KEYS)) {
+  if (!spec[key]) continue;
+  if (!/^#[0-9a-fA-F]{6}$/.test(spec[key])) throw new Error(`${key} must be a 6-digit hex color`);
+  overrides[token] = lc(spec[key]);
+}
+
 // --- token values as pure functions of the spec ----------------------------
 // The neutral scales tint every gray toward the brand hue — this is what makes
 // the whole app "match" a client brand even when all they give us is a logo.
@@ -101,9 +129,46 @@ function applyVars(section, vars, label) {
   return out;
 }
 
-const head = applyVars(css.slice(0, darkStart), light, "light");
+const head = applyVars(css.slice(0, darkStart), { ...light, ...overrides }, "light");
 const tail = applyVars(css.slice(darkStart), dark, "dark");
 writeFileSync(tokensPath, head + tail);
+
+// --- product name in user-facing copy --------------------------------------
+// Env vars cover most of the UI, but the locale file hard-codes the upstream
+// product name in ~30 strings a client actually reads ("Sign in to Cal.diy",
+// "Create your Cal.diy account", the onboarding welcome). Rewrite them here so
+// a client never sees the name of the project their tool was forked from.
+//
+// The marker records what was last written, so re-running with a new name
+// replaces the old one instead of only matching the upstream string — that is
+// what keeps this idempotent and safe after a merge from the template.
+const localePath = join(root, "packages/i18n/locales/en/common.json");
+const markerPath = join(root, "branding/.applied-name");
+const UPSTREAM_NAME = "Cal.diy";
+let previousName = "";
+try {
+  previousName = readFileSync(markerPath, "utf8").trim();
+} catch {
+  /* first run for this instance */
+}
+const namesToReplace = [UPSTREAM_NAME, previousName].filter(
+  (n) => n && n !== spec.name
+);
+if (namesToReplace.length) {
+  let locale = readFileSync(localePath, "utf8");
+  let replaced = 0;
+  for (const name of namesToReplace) {
+    const pattern = new RegExp(name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g");
+    replaced += (locale.match(pattern) || []).length;
+    locale = locale.replace(pattern, spec.name);
+  }
+  if (replaced) {
+    JSON.parse(locale); // never write a locale file the app can't load
+    writeFileSync(localePath, locale);
+    console.log(`Renamed ${replaced} user-facing strings to "${spec.name}".`);
+  }
+}
+writeFileSync(markerPath, `${spec.name}\n`);
 
 // --- deployment env vars ---------------------------------------------------
 console.log(`Theme applied for ${spec.company} (brand ${spec.brand}, neutral hue ${H}).\n`);

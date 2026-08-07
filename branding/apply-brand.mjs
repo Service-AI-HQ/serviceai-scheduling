@@ -133,6 +133,43 @@ const head = applyVars(css.slice(0, darkStart), { ...light, ...overrides }, "lig
 const tail = applyVars(css.slice(darkStart), dark, "dark");
 writeFileSync(tokensPath, head + tail);
 
+// --- product name in user-facing copy --------------------------------------
+// Env vars cover most of the UI, but the locale file hard-codes the upstream
+// product name in ~30 strings a client actually reads ("Sign in to Cal.diy",
+// "Create your Cal.diy account", the onboarding welcome). Rewrite them here so
+// a client never sees the name of the project their tool was forked from.
+//
+// The marker records what was last written, so re-running with a new name
+// replaces the old one instead of only matching the upstream string — that is
+// what keeps this idempotent and safe after a merge from the template.
+const localePath = join(root, "packages/i18n/locales/en/common.json");
+const markerPath = join(root, "branding/.applied-name");
+const UPSTREAM_NAME = "Cal.diy";
+let previousName = "";
+try {
+  previousName = readFileSync(markerPath, "utf8").trim();
+} catch {
+  /* first run for this instance */
+}
+const namesToReplace = [UPSTREAM_NAME, previousName].filter(
+  (n) => n && n !== spec.name
+);
+if (namesToReplace.length) {
+  let locale = readFileSync(localePath, "utf8");
+  let replaced = 0;
+  for (const name of namesToReplace) {
+    const pattern = new RegExp(name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g");
+    replaced += (locale.match(pattern) || []).length;
+    locale = locale.replace(pattern, spec.name);
+  }
+  if (replaced) {
+    JSON.parse(locale); // never write a locale file the app can't load
+    writeFileSync(localePath, locale);
+    console.log(`Renamed ${replaced} user-facing strings to "${spec.name}".`);
+  }
+}
+writeFileSync(markerPath, `${spec.name}\n`);
+
 // --- deployment env vars ---------------------------------------------------
 console.log(`Theme applied for ${spec.company} (brand ${spec.brand}, neutral hue ${H}).\n`);
 console.log("Set these on the deployment:");

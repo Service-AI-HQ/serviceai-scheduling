@@ -15,11 +15,10 @@ Next three, in order:
 1. **Finish the HubSpot install** on the ServiceAI instance (Apps -> HubSpot ->
    Install), then make a test booking and confirm a contact appears in portal
    243125050. The keys are deployed; only the in-app install is missing.
-2. **Remove the "Select plan / $15 per user" step** from onboarding. It is
-   meaningless self-hosted and it is what traps new client accounts.
-3. **Patient sign-in** — magic-link auth plus a patient area, so returning
+2. **Patient sign-in** — magic-link auth plus a patient area, so returning
    patients aren't re-typing their details. Brandon wants real accounts here,
    not prefilled links.
+3. **Stripe** — see Integrations; live mode is blocked on account activation.
 
 Everything else is either waiting on Brandon (see Open work) or genuinely
 optional.
@@ -78,9 +77,11 @@ upstream merges stay clean).
 3. **`GMAIL_SA_KEY_JSON` must be single-line valid JSON.** A PEM key with real
    newlines inside the JSON string is invalid; it silently killed every email
    for a day. Store with `json.dumps(key)` and verify by pulling it back.
-4. **Onboarding traps new users** behind a "Select plan" wizard — every route
-   redirects there. Set `users.completedOnboarding = true` when creating an
-   account, or the client can't reach Apps.
+4. **Onboarding used to trap new users** behind a "Select plan" wizard — every
+   route redirects into onboarding until it completes. Fixed 2026-08-07: the
+   plan step is skipped and `/onboarding/personal/settings` is the first step.
+   Setting `users.completedOnboarding = true` at creation is still the belt-and-
+   braces move when provisioning by SQL.
 5. **Embeds of the service list don't work** inside a host site (the iframe
    sizes itself from events only the booker emits; the modal renders at zero
    size). Arbor Vitae's site uses native cards linking straight to each booker.
@@ -133,7 +134,6 @@ Configured via `CAL_APP_KEYS_<SLUG>` env vars (env-first, falls back to
   accounts, not prefilled links
 - Adobe PDF intake forms
 - SMS reminders (parked — Brandon proving the concept elsewhere)
-- Remove the "$15/user/mo" plan step from onboarding; meaningless self-hosted
 - Cold starts: ~2s first load on Vercel free tier. Either a keep-warm cron or
   Vercel Pro
 

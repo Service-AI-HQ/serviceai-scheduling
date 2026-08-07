@@ -2,6 +2,28 @@
 
 Last updated 2026-08-07.
 
+## Start here (new session)
+
+Read this file top to bottom before touching anything, especially
+**Landmines found the hard way** — each one cost a real debugging session.
+
+Both live instances are healthy: booking, confirmation email with the calendar
+invite, and the dashboard webhook all verified end to end on 2026-08-07.
+
+Next three, in order:
+
+1. **Finish the HubSpot install** on the ServiceAI instance (Apps → HubSpot →
+   Install), then make a test booking and confirm a contact appears in portal
+   243125050. The keys are deployed; only the in-app install is missing.
+2. **Remove the "Select plan / $15 per user" step** from onboarding. It is
+   meaningless self-hosted and it is what traps new client accounts.
+3. **Patient sign-in** — magic-link auth plus a patient area, so returning
+   patients aren't re-typing their details. Brandon wants real accounts here,
+   not prefilled links.
+
+Everything else is either waiting on Brandon (see Open work) or genuinely
+optional.
+
 ## What this is
 
 A fork of `calcom/cal.diy` (MIT) that ServiceAI sells as **client-owned**
@@ -106,7 +128,6 @@ Configured via `CAL_APP_KEYS_<SLUG>` env vars (env-first, falls back to
   the schedule", written before online booking existed
 
 **Ready to build**
-- Cancel the remaining test booking (Aug 31, 4:15pm) on Arbor Vitae
 - Finish the HubSpot install and confirm a booking creates a contact
 - Patient sign-in (magic-link auth + patient area) — Brandon wants real
   accounts, not prefilled links

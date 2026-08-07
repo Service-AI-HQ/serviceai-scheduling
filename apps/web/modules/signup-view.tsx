@@ -291,7 +291,7 @@ export default function Signup({
         pushGTMEvent("create_account", { email: data.email, user: data.username, lang: data.language });
       }
 
-      const gettingStartedPath = onboardingV3Enabled ? "onboarding/getting-started" : "getting-started";
+      const gettingStartedPath = onboardingV3Enabled ? "onboarding/personal/settings" : "getting-started";
       const verifyOrGettingStarted = emailVerificationEnabled ? "auth/verify-email" : gettingStartedPath;
       const constructCallBackIfUrlPresent = () => {
         if (isOrgInviteByLink) {

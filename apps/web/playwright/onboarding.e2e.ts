@@ -15,16 +15,15 @@ test.describe("Onboarding", () => {
         identityProvider,
       });
       await user.apiLogin();
-      await page.goto("/onboarding/getting-started");
-      await page.waitForURL("/onboarding/getting-started");
 
-      await test.step("step 1 - Plan Selection", async () => {
-        await expect(page.getByTestId("onboarding-continue-btn")).toBeVisible();
-        await page.getByTestId("onboarding-continue-btn").click();
+      await test.step("the plan chooser is skipped", async () => {
+        // Kept as a route so old links resolve, but it must never render a plan
+        // to pick — it used to strand new accounts before they reached the app.
+        await page.goto("/onboarding/getting-started");
         await page.waitForURL(/.*\/onboarding\/personal\/settings/);
       });
 
-      await test.step("step 2 - Personal Settings", async () => {
+      await test.step("step 1 - Personal Settings", async () => {
         const nameInput = page.locator('input[name="name"]');
         await nameInput.fill("new user 2");
         await page.locator('button[type="submit"]').click();
@@ -34,7 +33,7 @@ test.describe("Onboarding", () => {
         expect(userComplete.name).toBe("new user 2");
       });
 
-      await test.step("step 3 - Calendar Connection", async () => {
+      await test.step("step 2 - Calendar Connection", async () => {
         await expect(page.getByTestId("onboarding-continue-btn")).toBeVisible();
         await page.getByTestId("onboarding-continue-btn").click();
         await page.waitForURL("/event-types**");

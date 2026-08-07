@@ -53,6 +53,43 @@ async function getAccessToken(
   return data.access_token;
 }
 
+type ServiceAccountKey = { client_email: string; private_key: string };
+
+/**
+ * Parse and validate the service-account key.
+ *
+ * Deliberately called per send rather than when this module loads. Parsing at
+ * module scope meant a malformed key threw during import of the whole email
+ * package, which poisoned every email path with an opaque
+ * INTERNAL_SERVER_ERROR long before any message was composed — a booking
+ * appeared to succeed while its confirmation was never sent.
+ *
+ * Also repairs the private key's newlines: PEM bodies routinely survive one
+ * storage path (a real newline) and arrive escaped ("\\n") from another, and
+ * the crypto signer rejects the escaped form.
+ */
+function parseServiceAccountKey(keyJson: string): ServiceAccountKey {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(keyJson);
+  } catch (err) {
+    throw new Error(
+      `GMAIL_SA_KEY_JSON is not valid JSON (${(err as Error).message}). It must hold the full ` +
+        `service-account key object.`
+    );
+  }
+  const key = parsed as Partial<ServiceAccountKey>;
+  if (!key?.client_email || !key?.private_key) {
+    throw new Error("GMAIL_SA_KEY_JSON is missing client_email or private_key.");
+  }
+  return {
+    client_email: key.client_email,
+    private_key: key.private_key.includes("\\n")
+      ? key.private_key.replace(/\\n/g, "\n")
+      : key.private_key,
+  };
+}
+
 /**
  * Nodemailer transport that sends through the Gmail API using a Google
  * service account with domain-wide delegation. Avoids SMTP entirely, so the
@@ -62,7 +99,6 @@ export function createGmailServiceAccountTransport(
   keyJson: string,
   impersonate: string
 ): Transport<SentMessageInfo> {
-  const key = JSON.parse(keyJson) as { client_email: string; private_key: string };
   return {
     name: "GmailServiceAccountTransport",
     version: "1.0.0",
@@ -70,6 +106,16 @@ export function createGmailServiceAccountTransport(
       // Bcc headers are stripped by nodemailer at build time unless keepBcc is
       // set; the property exists at runtime but is missing from MimeNode types.
       (mail.message as unknown as { keepBcc: boolean }).keepBcc = true;
+
+      let key: ServiceAccountKey;
+      try {
+        key = parseServiceAccountKey(keyJson);
+      } catch (err) {
+        // Surface the real cause on this one message instead of taking the
+        // whole email subsystem down at import time.
+        return callback(err as Error, {});
+      }
+
       mail.message.build((buildErr: Error | null, message: Buffer) => {
         if (buildErr) return callback(buildErr, {});
         getAccessToken(key.client_email, key.private_key, impersonate)

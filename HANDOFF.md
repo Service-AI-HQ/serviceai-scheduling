@@ -7,21 +7,22 @@ Last updated 2026-08-07.
 Read this file top to bottom before touching anything, especially
 **Landmines found the hard way** — each one cost a real debugging session.
 
-Both live instances are healthy: booking, confirmation email with the calendar
-invite, and the dashboard webhook all verified end to end on 2026-08-07.
+Both instances are live and healthy: booking, confirmation email with the
+calendar invite, and the dashboard webhook are all verified end to end.
 
 Next three, in order:
 
-1. **Finish the HubSpot install** on the ServiceAI instance (Apps -> HubSpot ->
-   Install), then make a test booking and confirm a contact appears in portal
-   243125050. The keys are deployed; only the in-app install is missing.
-2. **Patient sign-in** — magic-link auth plus a patient area, so returning
-   patients aren't re-typing their details. Brandon wants real accounts here,
-   not prefilled links.
-3. **Stripe** — see Integrations; live mode is blocked on account activation.
-
-Everything else is either waiting on Brandon (see Open work) or genuinely
-optional.
+1. **Google OAuth for client subdomains.** Clients cannot connect Google
+   Calendar at all — proven, not suspected: Google returns
+   `redirect_uri_mismatch` for
+   `https://arborvitae.serviceaihq.com/api/integrations/googlecalendar/callback`.
+   Needs the callback registered in Google Cloud Console, and a decision on the
+   consent screen (see Open work). This blocks the whole self-serve plugin idea.
+2. **Stripe login.** `stripe login` against the real business account, not the
+   sandbox. Then activation status, then swap test keys for live.
+3. **Verify the onboarding fix live** with a throwaway un-onboarded account.
+   The code is deployed and type-checked; the behaviour has not been observed
+   on the live site.
 
 ## What this is
 
@@ -34,6 +35,13 @@ template and propagates fixes.
 | --- | --- | --- | --- | --- |
 | ServiceAI | scheduling.serviceaihq.com | `main` | `serviceai-scheduling` | Neon `neondb` |
 | Arbor Vitae Wellness | arborvitae.serviceaihq.com | `client/arborvitae` | `arborvitae-scheduling` | Neon `arborvitae` |
+
+Per-instance switches (set on Vercel, emitted by `branding/apply-brand.mjs`):
+
+| Instance | `SERVICEAI_VERTICAL` | `SERVICEAI_PAYMENTS` | Apps seeded / enabled |
+| --- | --- | --- | --- |
+| ServiceAI | `general` | `true` | 105 / 83 |
+| Arbor Vitae | `medical` | `false` | 105 / 79 |
 
 Both Vercel projects are git-connected: **push to the branch = deploy**. Do not
 use `vercel deploy` from this repo — the CLI upload trips the 100 MB limit on
@@ -86,6 +94,21 @@ upstream merges stay clean).
    sizes itself from events only the booker emits; the modal renders at zero
    size). Arbor Vitae's site uses native cards linking straight to each booker.
    See `ArborVitae_Website/contact.html`.
+6. **The app-store seed disables working apps.** `yarn workspace @calcom/prisma
+   seed-app-store` decides `enabled` from raw env names (`HUBSPOT_CLIENT_ID`),
+   but these deployments supply keys as `CAL_APP_KEYS_<SLUG>`. It silently
+   flipped `daily-video` off on Arbor Vitae. Snapshot the enabled slugs first,
+   run the seed, then restore them:
+   `select slug from "App" where enabled;`
+7. **Never `source` a pulled `.env` in bash.** Bash strips the quotes, so
+   `GOOGLE_API_CREDENTIALS={"web":...}` becomes `{web:...}` and every JSON env
+   looks corrupt. This produced a convincing false alarm — both instances
+   appeared to have malformed Google credentials while production was fine.
+   Parse the file (strip one layer of quotes) and pass it as a real env dict.
+8. **Client subdomains are not registered Google OAuth callbacks.** Google
+   returns `redirect_uri_mismatch` for any
+   `https://<client>.serviceaihq.com/api/integrations/googlecalendar/callback`.
+   Every new client needs its two callbacks added in the Cloud Console.
 
 ## Integrations
 
@@ -94,6 +117,13 @@ Configured via `CAL_APP_KEYS_<SLUG>` env vars (env-first, falls back to
 
 - **Google Calendar** — OAuth client in GCP `serviceai-tools`, consent screen
   **Internal**, so no verification and no expiry. Connected on ServiceAI.
+  **Not usable by clients yet** — see landmine 8, plus Internal consent means
+  only `serviceaihq.com` accounts can authorise at all. Both must be resolved
+  before any client can link their calendar.
+- **App catalog** — 105 apps seeded on both instances so clients can connect
+  what they need themselves (calendars, video, CRM, analytics). Apps needing
+  platform credentials stay disabled until keys exist; the rest take the
+  client's own credentials.
 - **Email** — Gmail API via the domain-wide-delegated service account
   (`gmail-sender@serviceai-tools`, `gmail.send` only), transport in
   `packages/lib/gmailServiceAccountTransport.ts`. Verified end to end 2026-08-07:
@@ -101,8 +131,15 @@ Configured via `CAL_APP_KEYS_<SLUG>` env vars (env-first, falls back to
 - **HubSpot** — app id 48204739 (private, portal 243125050). Keys deployed;
   install still needs completing in Apps.
 - **Close** — OAuth app created; org was on a trial ending ~2026-08-14.
-- **Stripe** — wired in **test mode**. Going live needs Brandon to complete
-  Connect onboarding (business details, bank, liability terms), then swap keys.
+- **Stripe** — **test mode**, ServiceAI only. Direct charges to each client's
+  own connected account, no application fee, so ServiceAI carries no payment
+  liability — see `connect-recommend-plan.md` for the full configuration and
+  why. Blocked on `stripe login` against the real business account (the CLI key
+  expired and the browser session defaults to a sandbox).
+  Payments are gated per instance by `SERVICEAI_VERTICAL` / `SERVICEAI_PAYMENTS`
+  (`packages/lib/payments/instancePayments.ts`): opt-in everywhere, and never
+  available on `medical`. That medical rule is **ServiceAI policy about patient
+  payment data, not a Stripe restriction** — Stripe permits healthcare.
 - **Zoom** — General App, development mode, fine for Brandon's own account.
 - **Adobe PDF Services** — credentials stored; the intake-forms module is not
   built.
@@ -120,7 +157,13 @@ Configured via `CAL_APP_KEYS_<SLUG>` env vars (env-first, falls back to
 ## Open work
 
 **Needs Brandon**
-- Stripe live-mode activation (financial details — ServiceAI only, not an agent)
+- **Google OAuth decision.** Either (a) switch the consent screen to External
+  and go through Google verification for calendar scopes — one OAuth app for
+  every client, or (b) each client uses their own GCP OAuth client — no
+  verification burden, genuinely client-owned, but a real onboarding step.
+  Either way each client's two callbacks must be registered.
+- `stripe login` against the real business account, then live-mode activation
+  (financial details — ServiceAI only, not an agent)
 - Dr. G to confirm the 45-minute durations and which services are bookable
   online; also whether Applied Kinesiology is a separate appointment type
 - DNS for `arborvitaewellness.com` from the previous vendor, then
@@ -130,6 +173,8 @@ Configured via `CAL_APP_KEYS_<SLUG>` env vars (env-first, falls back to
 
 **Ready to build**
 - Finish the HubSpot install and confirm a booking creates a contact
+- Verify the onboarding plan-chooser skip on the live site with a fresh
+  un-onboarded account (deployed and type-checked, never observed live)
 - Patient sign-in (magic-link auth + patient area) — Brandon wants real
   accounts, not prefilled links
 - Adobe PDF intake forms

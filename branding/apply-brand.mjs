@@ -32,6 +32,16 @@ const H = Number(spec.neutral_hue);
 if (!(H >= 0 && H <= 360)) throw new Error("neutral_hue must be 0-360");
 const lc = (s) => s.toLowerCase();
 
+// Payments. Medical instances can never take payments — ServiceAI policy about
+// patient payment data, not a Stripe restriction. Resolved here so provisioning
+// a client is one spec file rather than a remembered env var.
+const vertical = (spec.vertical || "general").toLowerCase();
+if (!["general", "medical"].includes(vertical)) {
+  throw new Error(`vertical must be "general" or "medical", got ${vertical}`);
+}
+const paymentsRequested = String(spec.payments ?? "false").toLowerCase() === "true";
+const paymentsEnabled = vertical === "medical" ? false : paymentsRequested;
+
 // Optional exact light-mode neutrals. Hue-derived greys are a good guess from a
 // logo alone, but when a client's stylesheet states its greys, matching them is
 // the difference between "same colour family" and "same design" — a derived
@@ -172,9 +182,14 @@ writeFileSync(markerPath, `${spec.name}\n`);
 
 // --- deployment env vars ---------------------------------------------------
 console.log(`Theme applied for ${spec.company} (brand ${spec.brand}, neutral hue ${H}).\n`);
+if (vertical === "medical" && paymentsRequested) {
+  console.log('NOTE: payments: true was ignored — this instance is marked "medical".\n');
+}
 console.log("Set these on the deployment:");
 console.log(`  NEXT_PUBLIC_APP_NAME="${spec.name}"`);
 console.log(`  NEXT_PUBLIC_COMPANY_NAME="${spec.company}"`);
+console.log(`  SERVICEAI_VERTICAL="${vertical}"`);
+console.log(`  SERVICEAI_PAYMENTS="${paymentsEnabled}"`);
 if (spec.support_email) console.log(`  NEXT_PUBLIC_SUPPORT_MAIL_ADDRESS="${spec.support_email}"`);
 if (spec.support_email) console.log(`  NEXT_PUBLIC_SENDGRID_SENDER_NAME="${spec.company}"`);
 console.log("\nRemaining manual steps: logo assets (branding/README.md step 4).");

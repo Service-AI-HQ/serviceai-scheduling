@@ -100,8 +100,6 @@ class StripePaymentService implements IAbstractPaymentService {
           bookerName,
           bookerEmail: bookerEmail,
           bookerPhoneNumber: bookerPhoneNumber ?? null,
-          eventTitle: eventTitle || "",
-          bookingTitle: bookingTitle || "",
         }),
       };
 
@@ -275,8 +273,6 @@ class StripePaymentService implements IAbstractPaymentService {
           bookerName: booking.attendees[0].name,
           bookerEmail: booking.attendees[0].email,
           bookerPhoneNumber: booking.attendees[0].phoneNumber ?? null,
-          eventTitle: booking.eventType?.title || null,
-          bookingTitle: booking.title,
         }),
       };
 
@@ -449,6 +445,20 @@ class StripePaymentService implements IAbstractPaymentService {
     return !!this.credentials;
   }
 
+  /**
+   * Deliberately omits the event and booking titles.
+   *
+   * Upstream sent them, which on a healthcare instance means a named patient
+   * arrives at the payment processor attached to the treatment they booked
+   * ("Physical Therapy between <practice> and <patient>"). Stripe's guidance is
+   * to never put sensitive information in metadata, and because every client
+   * connects their own Stripe account, that data would land in the client's
+   * account under the client's legal obligations, not ours.
+   *
+   * That Stripe can infer "someone paid a chiropractor" is unavoidable for any
+   * card payment. Which service they bought is not, so it isn't sent. bookingId
+   * still ties a charge back to its booking for reconciliation and refunds.
+   */
   private generateMetadata({
     bookingId,
     userId,
@@ -456,8 +466,6 @@ class StripePaymentService implements IAbstractPaymentService {
     bookerName,
     bookerEmail,
     bookerPhoneNumber,
-    eventTitle,
-    bookingTitle,
   }: {
     bookingId: number;
     userId: number | null | undefined;
@@ -465,8 +473,6 @@ class StripePaymentService implements IAbstractPaymentService {
     bookerName: string;
     bookerEmail: string;
     bookerPhoneNumber: string | null;
-    eventTitle: string | null;
-    bookingTitle: string;
   }) {
     return {
       identifier: "cal.com",
@@ -476,8 +482,6 @@ class StripePaymentService implements IAbstractPaymentService {
       bookerName,
       bookerEmail: bookerEmail,
       bookerPhoneNumber: bookerPhoneNumber ?? null,
-      eventTitle: eventTitle || "",
-      bookingTitle: bookingTitle || "",
     };
   }
 }

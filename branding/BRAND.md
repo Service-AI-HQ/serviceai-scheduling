@@ -28,6 +28,11 @@ text: "#4A4A4A"          # --chr, body copy
 text_subtle: "#8A8574"   # --mut
 text_muted: "#A9A498"
 text_inverted: "#FFFFFF"
+# vertical: general | medical. Medical instances can never take payments —
+# ServiceAI policy, to stay away from patient payment data.
+vertical: medical
+# payments: forced off by `vertical: medical` regardless of this value.
+payments: false
 ---
 
 # Arbor Vitae Wellness — brand spec

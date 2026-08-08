@@ -4,11 +4,19 @@ import type Stripe from "stripe";
 import { z } from "zod";
 
 import { WEBAPP_URL } from "@calcom/lib/constants";
+import { paymentsUnavailableReason } from "@calcom/lib/payments/instancePayments";
 import prisma from "@calcom/prisma";
 
 import { getStripeAppKeys } from "../lib/getStripeAppKeys";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Checked here rather than only in the UI: this route hands back a Stripe
+  // OAuth URL, so hiding the button elsewhere would still leave it reachable.
+  const unavailable = paymentsUnavailableReason();
+  if (unavailable) {
+    return res.status(403).json({ message: unavailable });
+  }
+
   const { client_id } = await getStripeAppKeys();
 
   if (req.method === "GET") {

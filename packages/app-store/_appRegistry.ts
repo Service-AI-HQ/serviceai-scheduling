@@ -3,6 +3,7 @@ import { getAllDelegationCredentialsForUser } from "@calcom/app-store/delegation
 import { getAppFromSlug } from "@calcom/app-store/utils";
 import type { UserAdminTeams } from "@calcom/features/users/repositories/UserRepository";
 import getInstallCountPerApp from "@calcom/lib/apps/getInstallCountPerApp";
+import { arePaymentsEnabled } from "@calcom/lib/payments/instancePayments";
 import prisma, { safeAppSelect, safeCredentialSelect } from "@calcom/prisma";
 import { userMetadata } from "@calcom/prisma/zod-utils";
 import type { AppFrontendPayload as App } from "@calcom/types/App";
@@ -12,6 +13,16 @@ export type TDependencyData = {
   name?: string;
   installed?: boolean;
 }[];
+
+/**
+ * Payment processors are hidden entirely when the instance can't take payments,
+ * so a client never sees an option they aren't permitted to complete. Keyed on
+ * the category rather than the Stripe slug so any processor added later is
+ * covered without another change here.
+ */
+function isHiddenPaymentApp(categories: string[]): boolean {
+  return !arePaymentsEnabled() && categories.includes("payment");
+}
 
 /**
  * Get App metadata either using dirName or slug
@@ -47,6 +58,7 @@ export async function getAppRegistry() {
   for await (const dbapp of dbApps) {
     const app = await getAppWithMetadata(dbapp);
     if (!app) continue;
+    if (isHiddenPaymentApp(dbapp.categories)) continue;
     // Skip if app isn't installed
     /* This is now handled from the DB */
     // if (!app.installed) return apps;
@@ -110,6 +122,7 @@ export async function getAppRegistryWithCredentials(userId: number, userAdminTea
     const allCredentials = [...delegationCredentialsForApp, ...nonDelegationCredentialsForApp];
     const app = await getAppWithMetadata(dbapp);
     if (!app) continue;
+    if (isHiddenPaymentApp(dbapp.categories)) continue;
     // Skip if app isn't installed
     /* This is now handled from the DB */
     // if (!app.installed) return apps;

@@ -11,6 +11,12 @@ brand_emphasis_dark: "#FF8C3F"
 brand_text: "#1A0A00"
 neutral_hue: 24
 logo_source: branding/assets/logo-mark.png
+# vertical: general | medical. Medical instances can never take payments —
+# ServiceAI policy, to stay away from patient payment data.
+vertical: general
+# payments: may this instance connect a payment processor? Opt-in, and forced
+# off for medical regardless of what is set here.
+payments: true
 ---
 
 # ServiceAI — brand spec

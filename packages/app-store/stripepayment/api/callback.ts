@@ -1,5 +1,6 @@
 import { stringify } from "node:querystring";
 import { getSafeRedirectUrl } from "@calcom/lib/getSafeRedirectUrl";
+import { paymentsUnavailableReason } from "@calcom/lib/payments/instancePayments";
 import type { Prisma } from "@calcom/prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import getInstalledAppPath from "../../_utils/getInstalledAppPath";
@@ -22,6 +23,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (!req.session?.user?.id) {
     return res.status(401).json({ message: "You must be logged in to do this" });
+  }
+
+  // Re-checked after the round trip to Stripe: a flow started before payments
+  // were switched off must not be able to land a credential on the account.
+  const unavailable = paymentsUnavailableReason();
+  if (unavailable) {
+    return res.status(403).json({ message: unavailable });
   }
 
   const response = await stripe.oauth.token({

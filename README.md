@@ -1,3 +1,7 @@
+# ServiceAI Scheduling (Cal.diy fork)
+
+This repository is ServiceAI's fork of Cal.diy, a self-hosted scheduling platform for people and organizations that want control of their booking infrastructure. It is a large Next.js monorepo backed by PostgreSQL; running it safely requires experienced operators. This fork is distinct from the smaller practice-specific Wren landing page and ServiceAi Booking application.
+
 > [!WARNING]  
 > Use at your own risk. Cal.diy is the open source community edition of Cal.com and it is intended for users who want to self-host their own Cal.diy instance. It is strictly recommended for personal, non-production use. Please review all installation and configuration steps carefully. Self-hosting requires advanced knowledge of server administration, database management, and securing sensitive data. Proceed only if you are comfortable with these responsibilities.
 
@@ -827,6 +831,105 @@ Don't code but still want to contribute? help translate Cal.diy into your langua
 <!-- ACKNOWLEDGEMENTS -->
 
 ## Acknowledgements
+
+## Owner's comprehension guide
+
+### Tech stack
+
+| Layer | Technology | Role |
+|---|---|---|
+| Web | TypeScript, React, Next.js | Booking pages and administration |
+| API | tRPC | Type-safe server/client operations |
+| Data | PostgreSQL and Prisma | Scheduling and account persistence |
+| Auth | NextAuth.js | User sessions and providers |
+| Monorepo | Yarn and Turborepo | Coordinates apps and packages |
+| Tests | Vitest and Playwright | Unit and browser coverage |
+| Deployment | Docker; provider guides below | Self-hosted runtime |
+
+### What happens when you run it
+
+```mermaid
+sequenceDiagram
+    participant U as Visitor
+    participant N as Next.js app
+    participant T as tRPC/services
+    participant P as Prisma/PostgreSQL
+    U->>N: Open booking page
+    N->>T: Request event type and availability
+    T->>P: Query calendars, users, and bookings
+    P-->>T: Scheduling state
+    T-->>N: Available slots
+    N-->>U: Render choices
+    U->>N: Confirm booking
+    N->>T: Validate and create booking
+    T->>P: Persist transaction
+```
+
+The web app orchestrates feature packages; Prisma is the database boundary, and integrations under `packages/app-store/` connect external calendars and conferencing systems.
+
+### Worked example
+
+```bash
+yarn dx
+# Starts the development stack and a local PostgreSQL database, then prints test-user credentials.
+```
+
+This deliberately does not create a public deployment or configure external calendar credentials.
+
+### How to deploy
+
+The repository documents Docker, Railway, Northflank, Vercel, Render, and Elestio paths above. Docker is the most directly evidenced portable route:
+
+```bash
+docker compose up --build
+```
+
+No ServiceAI production account, domain, environment, or release pipeline is represented in the repository, so the currently live deployment is **unverifiable from code**. Treat every provider guide as a starting point and validate secrets, database backups, HTTPS, email, calendar credentials, and migrations before production use.
+
+### Why it is built this way
+
+| Decision | Rationale |
+|---|---|
+| Monorepo packages | Shares scheduling, UI, integrations, and data contracts |
+| Prisma + PostgreSQL | Transactional relational model for bookings |
+| tRPC | Keeps TypeScript API calls and server contracts aligned |
+| Self-hosted fork | Gives operators control while excluding Cal.com enterprise code |
+
+### I want to change X
+
+| Change | Start here |
+|---|---|
+| Routes/pages | `apps/web/app/` |
+| API behavior | `packages/trpc/server/routers/` |
+| Database | `packages/prisma/schema.prisma` |
+| Integrations | `packages/app-store/` |
+| Shared UI | `packages/ui/` |
+| Translations | `packages/i18n/locales/en/common.json` |
+
+### Troubleshooting by symptom
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| Prisma cannot connect | PostgreSQL or `DATABASE_URL` is unavailable | Start the database and verify `.env` |
+| Login loops/fails | NextAuth URL or secret is wrong | Check `NEXTAUTH_URL` and `NEXTAUTH_SECRET` |
+| Integration is absent | Provider credentials are not configured | Follow the relevant integration section |
+| Docker starts but app is unhealthy | Migrations or required environment values are missing | Inspect container logs and run documented database setup |
+
+### Verifying it works
+
+```bash
+yarn type-check:ci --force
+TZ=UTC yarn test
+git diff --check
+```
+
+### FAQ
+
+**Is this Cal.com SaaS?** No. It is a self-hosted Cal.diy fork.
+
+**Is ServiceAI production documented here?** No; production ownership and configuration are not checked in.
+
+**Can it run without PostgreSQL?** No. Prisma-backed scheduling requires PostgreSQL.
 
 Cal.diy is built on the foundation created by [Cal.com](https://cal.com) and the many contributors to the original project. Special thanks to:
 
